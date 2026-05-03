@@ -237,7 +237,58 @@ Had we **failed** to condition on party ID, the marginal association between $E$
 
 ---
 
-## 10. Reproducibility
+## 10. Decisions Defended
+
+The ten modeling/data choices we are prepared to defend in the in-person discussion:
+
+1. **Why three economy levels (not five)?** `CC22_302` has 5 levels plus a "Not sure" sixth. Collapsing into Better/Same/Worse (a) sharpens the contrast of interest, (b) gives every $(E, P)$ cell ≥ 200 observations, and (c) avoids an ordinality-vs-categorical debate. The substantive theory is about "did the economy improve, hold, or decline" — a 3-bucket question.
+2. **Why drop "Not sure" rather than impute?** A missing economic perception is plausibly *informative* (e.g. politically disengaged respondents). Imputing would itself require a model. Clean exclusion is honest about the estimand: the ATE among voters who *have* an opinion on the economy.
+3. **Why three party-ID levels, dropping "Other"/"Not sure"?** Same logic as #2, plus we want a clean closed-form interaction. The dropped fraction is small.
+4. **Why subsample to N = 8,000?** Pure compute. The full clean sample is ~30 K. Sampling 30 K rows through NUTS would be 5-10× slower with no meaningful change in posterior precision (HDIs already ±0.025 wide on the ATE). The subsample is **stratified on $(E, P)$** so the empirical joint distribution — used for post-stratification — is preserved.
+5. **Why interaction encoding ($\alpha_{e,p}$) instead of additive ($\beta_e + \gamma_p$)?** The literature (and our data) shows the effect of $E$ varies by $P$ — Democrats barely budge, Independents swing massively. Additive encoding would impose homogeneity that is empirically false. The interaction model also nests the additive model.
+6. **Why Normal(0, 1.5)?** The prior-predictive plot shows σ = 1.5 yields an approximately *uniform* prior on the probability scale. σ = 1 piles up at 0.5 (artificially shrinks toward chance), σ = 5 piles up at 0/1 (asserts certainty before seeing data). σ = 1.5 is the sweet spot recommended by McElreath (2020) §11.1.1.
+7. **Why Bernoulli, not Beta-Binomial?** One trial per respondent, not aggregated counts. Bernoulli is the unique exponential-family choice for a single 0/1 outcome; overdispersion is not a coherent concept here.
+8. **Why post-stratification rather than reporting a marginal coefficient?** A marginal coefficient depends on encoding. Post-stratification gives the **population-level** ATE on the **probability scale** — directly interpretable.
+9. **Why 89% HDI rather than 95%?** McElreath / *Statistical Rethinking* convention used throughout the course: 89% is a prime, less ritualized than 95%, and avoids implying a frequentist confidence guarantee.
+10. **What unmeasured confounders are we worried about?** Education, income, race, age, district characteristics — all plausibly affect both economic perception and vote choice. Acknowledged in §9; we propose an E-value sensitivity analysis as future work.
+
+---
+
+## 11. Anticipated Q&A
+
+**Q1. "Why is your treatment endogenous to your confound?"**
+Because party identification shapes economic perception (Bartels 2002; Bisgaard 2015). That's *exactly* why $P$ is the confound — arrows go to both $E$ and $V$, creating the backdoor path we close by stratification.
+
+**Q2. "Could the arrow go $V \to E$ instead?"**
+This would be reverse causation (rationalization). For a midterm House vote and a *retrospective* economy perception ("over the past year"), temporal ordering favors $E \to V$. Acknowledged as a sensitivity concern in §9.3.
+
+**Q3. "Why didn't you use the survey weights `commonpostweight`?"**
+Survey weights matter for population-level inference about marginal quantities. They are usually unnecessary for *causal effects estimated within strata* — weights would shift sample composition but not change $\sigma(\alpha_{e,p})$. A weighted re-estimation is a natural robustness check; the headline ATE direction would not change.
+
+**Q4. "Shouldn't ESS bulk be > 1000, not > 400?"**
+The 400 threshold follows Vehtari et al. (2021): >100 per chain × 4 chains. Our parameters all have ESS_bulk > 6,000, far above either threshold.
+
+**Q5. "Walk me through the prior predictive simulation."**
+We drew $\alpha\sim\text{Normal}(0, 1.5)$, applied $\sigma(\cdot)$, and plotted the implied prior on $\Pr(V=1)$. With σ = 1.5 the prior is ~uniform on $(0, 1)$ — no pre-commitment. With σ = 0.3 it collapses to 0.5; with σ = 5 it bimodally hugs 0 and 1. σ = 1.5 is the minimally informative choice that respects the domain fact that subgroup vote-shares are bounded away from 0/1 in practice.
+
+**Q6. "How does the simulation in §6 differ from the analysis in §7?"**
+Same model class. In §6 we *generate* synthetic data from a fixed `ALPHA_TRUE` and verify the posterior recovers it (89% HDIs cover truth). In §7 we feed in real CES data; recovery cannot be checked directly because the truth is unknown — instead we check posterior-predictive fit (§8).
+
+**Q7. "Are you over-fitting with 9 free parameters?"**
+With ~8,000 observations and 9 parameters, that's ~890 obs/parameter — well within Bayesian regularization comfort. Normal(0, 1.5) also pulls toward 0 (50:50 in probability), providing additional shrinkage in any low-N cell. PPC shows no evidence of overfit.
+
+**Q8. "What does the within-stratum heterogeneity tell us substantively?"**
+Independents — canonical "swing" voters — drive most of the aggregate effect. Strong in-party Democrats are essentially insensitive to economic perception. This matches the *motivated reasoning* literature and explains why national elections turn on economic conditions filtered through the small-but-pivotal independent middle.
+
+**Q9. "If the Democrats were not the incumbent, would the sign flip?"**
+Yes. The model is about voting for the *incumbent* party. In a counterfactual 2022 with a Republican president, perceiving the economy as worse would push voters away from Republican House candidates — i.e. *toward* Democrats. The asymmetry is encoded by the choice of which party defines $V = 1$.
+
+**Q10. "Why isn't pre-treatment vs post-treatment partisan ID a problem?"**
+Party ID is highly stable in adulthood (Green, Palmquist, Schickler 2002). Treating it as pre-treatment to a 1-year retrospective economic perception is a defensible simplification, though not ironclad. Flagged as a future-work item in §9.3.
+
+---
+
+## 12. Reproducibility
 
 ```bash
 # from the project directory
@@ -256,7 +307,7 @@ uv run --quiet \
 
 ---
 
-## 11. References
+## 13. References
 
 * **Treatment → Outcome mechanism (independent of the dataset paper):**
   Healy, A. & Lenz, G. S. (2014). Substituting the End for the Whole: Why Voters Respond Primarily to the Election-Year Economy. *American Journal of Political Science*, 58(1), 31-47.
@@ -275,7 +326,7 @@ uv run --quiet \
 
 ---
 
-## 12. Group Member Contributions
+## 14. Group Member Contributions
 
 * **Proposal:** Member 1, Member 2, Member 3
 * **Introduction:** Member 1
