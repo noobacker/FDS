@@ -1,0 +1,31 @@
+Hello Everyone,
+
+Please read this announcement in its entirety. It has important information regarding the final project.
+
+Final Project Proposal
+Project proposal have been graded. You can view your grade in Gradescope. Be sure to check your proposal for feedback even in the case that you have received full credit. There may be issues that you are required to address in your project submission to avoid deductions on your writeup.
+
+A couple of general comments on the proposals
+
+1. Defining Priors - While the point of this proposal was not to choose good priors, you will need to justify your prior choices through domain knowledge/research and prior predictive simulations for the final project submission in order to receive full credit on the final project submission. While I did not comment on prior choices in most proposals, given that they are just temporary choices, I saw a number of prior definitions that should be refined (using domain knowledge/research and prior predictive simulations) in the final project.
+
+2. Categorical Variables - A number of projects include categorical variables (treatment, confound, or both). However, the statistical models for incorporating the categorical variables into the model use dummy encoding. We spent a lot of time this semester using the index-based encoding of categorical variables provided by PyMC in lecture examples and homework assignments. Index-based categorical encoding is the approach that I want to see used in the statistical models for the final project to demonstrate your understanding of this technique. There are many examples from this semester where this technique was used. The UC Berkeley admissions lecture (Bernoulli/Binomial Generalized Linear Models) and Homework #5 are probably the best examples because they show how index-based categorical encoding can be used for both binary variables as well as how they can be extended to categorical variables with more than 2 labels.
+
+Final Projects Submissions
+As a reminder, the deadline for submission of final projects (writeup and screencast) is Sunday, May 3rd at 11:59 PM EST. Attached you will find a Jupyter notebook template file (also available on Brightspace under Content > Final Project > project_template.ipynb) that you should use and fill with your group's computational work and analysis. Replace the placeholder text in the template with the content of your final project write-up to guide you in completing the project.
+
+Project Discussion Scheduling
+As described in the final project details document shared with you a few weeks ago, each group will need to take part in an in-person discussion with me after their final project is submitted. Each session will last for about 25 minutes. These sessions will take place during the week of May 4th. On Monday, Wednesday, Thursday, and Friday, the sessions will take place in my office (370 Jay Street, Rm 840). On Tuesday, the sessions will take place in the lecture classroom (2 MetroTech Center, Room 801). There will not be a lecture on Tuesday, May 5th due to discussion sessions being held during that time.
+
+I have created 21 slots for the week of May 4th - May 8th. These slots are at different times depending on the day. I hope the diversity of options will ensure that every group can find a time that works for each of the group members. If a group cannot find a time that works for every member of the group, I will work with the group individually to find a time that works during that week. Before committing to a timeslot, make sure everyone in the group is ok with the selected time. Late arrival to the discussion session will result in a penalty on the Project Discussion portion of the grade.
+
+Discussion slots can be found at the link below:
+
+https://calendar.app.google/JRARV9awXBAejF8r8
+
+If you have any questions about discussion sessions, please submit them to the discussion board. I will respond as quickly as possible.
+
+Good luck completing the final projects! I hope that you find it to be a rewarding experience.
+
+Best,
+DR
